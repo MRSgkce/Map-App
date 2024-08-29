@@ -10,6 +10,11 @@ import MapKit
 import CoreLocation
 
 class ViewController: UIViewController, MKMapViewDelegate,CLLocationManagerDelegate {
+    
+    @IBOutlet weak var isim: UITextField!
+    
+    @IBOutlet weak var not: UITextField!
+    
 
     @IBOutlet weak var mapView: MKMapView!
     var locationManager = CLLocationManager()
@@ -26,7 +31,26 @@ class ViewController: UIViewController, MKMapViewDelegate,CLLocationManagerDeleg
         //konumu güncelle
         locationManager.startUpdatingLocation()
         
-        let gestureRecognizer
+        //bir kere dokununca değil uzun basınca
+        let gestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(konumSec(gestureRecognizer: )))
+        gestureRecognizer.minimumPressDuration = 3
+        mapView.addGestureRecognizer(gestureRecognizer)
+        
+    }
+    
+    @objc func konumSec(gestureRecognizer : UILongPressGestureRecognizer){
+        if gestureRecognizer.state == .began{
+           let dokunalan=gestureRecognizer.location(in: mapView)
+            let dokunlnkordinat=mapView.convert(dokunalan, toCoordinateFrom: mapView)
+            
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = dokunlnkordinat
+            annotation.title=isim.text
+            annotation.subtitle=not.text
+            mapView.addAnnotation(annotation)
+            
+        }
+        
         
     }
 
